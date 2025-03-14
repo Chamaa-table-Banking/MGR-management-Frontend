@@ -52,7 +52,7 @@ export default function Register() {
         // <ImageBackground source={require('../assets/images/savings-pic.jpg')} style={styles.background}>
         <BlurView intensity={50} style={styles.overlay}>
 
-            <StatusBar style={colorScheme === 'dark' ? colorScheme : 'light'} />;
+            <StatusBar style={colorScheme === 'dark' ? colorScheme : 'light'} />
 
             <SafeAreaView style={styles.container}>
                 <Text style={styles.title}>Sign Up With Us</Text>

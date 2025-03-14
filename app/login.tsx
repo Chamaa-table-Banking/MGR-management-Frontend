@@ -37,7 +37,7 @@ export default function LoginScreen() {
         <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', maxWidth: '100%', padding: 20 }}>
             {/* Configure StatusBar */}
 
-            <StatusBar style={colorScheme === 'dark' ? colorScheme : 'light'} />;
+            <StatusBar style={colorScheme === 'dark' ? colorScheme : 'light'} />
 
             {/* <ImageBackground
                 source={require('../assets/images/savings-pic.jpg')}
