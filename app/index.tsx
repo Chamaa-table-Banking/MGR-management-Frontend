@@ -24,13 +24,13 @@ const slides: Slide[] = [
         id: '2',
         title: 'Automate Your Savings',
         description: 'Set up automatic contributions and keep track of all transactions effortlessly.',
-        image: require('../assets/images/illustration.png'),
+        image: require('../assets/images/illustration2.png'),
     },
     {
         id: '3',
         title: 'Seamless Transactions',
         description: 'Enjoy a smooth and secure way to contribute and withdraw money.',
-        image: require('../assets/images/illustration.png'),
+        image: require('../assets/images/illustration3.png'),
     },
 ];
 

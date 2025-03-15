@@ -67,8 +67,8 @@ export default function LoginScreen() {
                 >
                     <Text style={{ color: 'white', fontWeight: 'bold' }}>Sign In</Text>
                 </TouchableOpacity>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: '80%' }}>
-                    <Text style={{ color: 'blue', textDecorationLine: 'underline' }}>Forgot password?</Text>
+                <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', width: '80%' }}>
+                    <Text style={{ color: 'blue', textDecorationLine: 'underline', marginVertical: 10 }}>Forgot password?</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Text>
                             Don't have an account?
