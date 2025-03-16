@@ -15,7 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
-export default function Home  () {
+export default function Home() {
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState('dashboard');
 
@@ -41,7 +41,7 @@ export default function Home  () {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
-      
+
       {/* Top Bar */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>GroupSave</Text>
@@ -90,7 +90,7 @@ export default function Home  () {
         {/* Chart Section */}
         <View style={[styles.section, styles.chartSection]}>
           <Text style={styles.sectionTitle}>Contribution History</Text>
-          
+
           <LineChart
             data={chartData}
             width={width - 40}
@@ -120,7 +120,7 @@ export default function Home  () {
         {/* Goal Progress */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Annual Trip Goal</Text>
-          
+
           <View style={styles.goalContainer}>
             <View style={styles.progressContainer}>
               <View style={styles.progressCircleContainer}>
@@ -138,7 +138,7 @@ export default function Home  () {
         {/* Recent Activity */}
         <View style={[styles.section, { marginBottom: 90 }]}>
           <Text style={styles.sectionTitle}>Recent Activity</Text>
-          
+
           {recentActivity.map((activity) => (
             <View key={activity.id} style={styles.activityItem}>
               <View style={styles.activityInitials}>
@@ -158,79 +158,79 @@ export default function Home  () {
 
       {/* Bottom Navigation */}
       <View style={[styles.bottomNav, { paddingBottom: insets.bottom || 10 }]}>
-        <TouchableOpacity 
-          style={styles.navItem} 
+        <TouchableOpacity
+          style={styles.navItem}
           onPress={() => setActiveTab('dashboard')}
         >
           <View style={[styles.navIcon, activeTab === 'dashboard' ? styles.activeNavIcon : null]}>
-            <Ionicons 
-              name={activeTab === 'dashboard' ? 'home' : 'home-outline'} 
-              size={22} 
-              color={activeTab === 'dashboard' ? '#00803e' : '#888888'} 
+            <Ionicons
+              name={activeTab === 'dashboard' ? 'home' : 'home-outline'}
+              size={22}
+              color={activeTab === 'dashboard' ? '#00803e' : '#888888'}
             />
           </View>
           <Text style={[styles.navText, activeTab === 'dashboard' ? styles.activeNavText : null]}>
             Dashboard
           </Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
+
+        <TouchableOpacity
+          style={styles.navItem}
           onPress={() => setActiveTab('transactions')}
         >
           <View style={[styles.navIcon, activeTab === 'transactions' ? styles.activeNavIcon : null]}>
-            <Ionicons 
-              name={activeTab === 'transactions' ? 'swap-vertical' : 'swap-vertical-outline'} 
-              size={22} 
-              color={activeTab === 'transactions' ? '#00803e' : '#888888'} 
+            <Ionicons
+              name={activeTab === 'transactions' ? 'swap-vertical' : 'swap-vertical-outline'}
+              size={22}
+              color={activeTab === 'transactions' ? '#00803e' : '#888888'}
             />
           </View>
           <Text style={[styles.navText, activeTab === 'transactions' ? styles.activeNavText : null]}>
             Transactions
           </Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
+
+        <TouchableOpacity
+          style={styles.navItem}
           onPress={() => setActiveTab('groups')}
         >
           <View style={[styles.navIcon, activeTab === 'groups' ? styles.activeNavIcon : null]}>
-            <Ionicons 
-              name={activeTab === 'groups' ? 'people' : 'people-outline'} 
-              size={22} 
-              color={activeTab === 'groups' ? '#00803e' : '#888888'} 
+            <Ionicons
+              name={activeTab === 'groups' ? 'people' : 'people-outline'}
+              size={22}
+              color={activeTab === 'groups' ? '#00803e' : '#888888'}
             />
           </View>
           <Text style={[styles.navText, activeTab === 'groups' ? styles.activeNavText : null]}>
             Groups
           </Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
+
+        <TouchableOpacity
+          style={styles.navItem}
           onPress={() => setActiveTab('reports')}
         >
           <View style={[styles.navIcon, activeTab === 'reports' ? styles.activeNavIcon : null]}>
-            <Ionicons 
-              name={activeTab === 'reports' ? 'bar-chart' : 'bar-chart-outline'} 
-              size={22} 
-              color={activeTab === 'reports' ? '#00803e' : '#888888'} 
+            <Ionicons
+              name={activeTab === 'reports' ? 'bar-chart' : 'bar-chart-outline'}
+              size={22}
+              color={activeTab === 'reports' ? '#00803e' : '#888888'}
             />
           </View>
           <Text style={[styles.navText, activeTab === 'reports' ? styles.activeNavText : null]}>
             Reports
           </Text>
         </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.navItem} 
+
+        <TouchableOpacity
+          style={styles.navItem}
           onPress={() => setActiveTab('settings')}
         >
           <View style={[styles.navIcon, activeTab === 'settings' ? styles.activeNavIcon : null]}>
-            <Ionicons 
-              name={activeTab === 'settings' ? 'settings' : 'settings-outline'} 
-              size={22} 
-              color={activeTab === 'settings' ? '#00803e' : '#888888'} 
+            <Ionicons
+              name={activeTab === 'settings' ? 'settings' : 'settings-outline'}
+              size={22}
+              color={activeTab === 'settings' ? '#00803e' : '#888888'}
             />
           </View>
           <Text style={[styles.navText, activeTab === 'settings' ? styles.activeNavText : null]}>
@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
   },
   bottomNav: {
     flexDirection: 'row',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: '#ffffff',
     borderTopWidth: 1,
