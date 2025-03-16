@@ -15,9 +15,10 @@ export default function LoginScreen() {
     const colorScheme = useColorScheme();
 
 
-    const handleLogin = async () => {
-        // e.preventDefault();
-        // setError('');
+    const handleLogin = async (e: any) => {
+        // router.replace('./screens/home');
+        e.preventDefault();
+        setError('');
         try {
             const response = await auth.login(phone, password);
             if (typeof response === 'object' && response !== null && response.success) {
