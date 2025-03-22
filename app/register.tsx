@@ -6,9 +6,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { BlurView, } from 'expo-blur';
 import { FontAwesome } from '@expo/vector-icons';
+// import axios from 'axios';
 import auth from './api/auth/auth';
 
 import validate from './function/validateregistration';
+
 
 
 export default function Register() {
@@ -27,25 +29,35 @@ export default function Register() {
 
     const handleRegister = async (e: any) => {
         e.preventDefault();
-        // console.log(phone, password, fullName)
+        
         try {
-            const validateFields = validate(fullName, phone, password, confirmPassword);
-            if (validateFields) {
-                if (typeof validateFields === 'object' && validateFields.message) {
-                    setError(validateFields.message);
-                    setTimeout(() => {
-                        setError('');
-                    }, 5000);
-                } else {
-                    await auth.register(fullName, email, password, phone);
-                    router.push('/login');
-                }
+            // Validate form fields
+            const validationResult = validate(fullName, phone, password, confirmPassword);
+            
+            if (!validationResult) {
+                return;
+            }
+            
+            if (typeof validationResult === 'object' && validationResult.message) {
+                setError(validationResult.message);
+                setTimeout(() => setError(''), 5000);
+                return;
+            }
+            
+            // Proceed with registration
+            const res = await auth.register(fullName, email, password, phone);
+            
+            if (res.data.id) {
+                const defaultRole = 'f869a850-4d9d-4598-9311-ec3bb744f688';
+                await auth.createRole(email, defaultRole, fullName, res.data.id);
+                router.push('/login');
             }
         } catch (error) {
             console.error('Registration failed:', error);
+            setError('Registration failed. Please try again.');
+            setTimeout(() => setError(''), 5000);
         }
     };
-
 
 
 
