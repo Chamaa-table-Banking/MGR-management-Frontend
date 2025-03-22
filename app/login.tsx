@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import auth from './api/auth/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
     const [username, setUsername] = useState('');
@@ -22,7 +23,9 @@ export default function LoginScreen() {
         try {
             const response = await auth.login(username, password);
             if (!response.data.error) {
-                router.push('/');
+                console.log(response);
+                await AsyncStorage.setItem("user", JSON.stringify(response.data));
+                router.push('/screens/home');
             } else {
                 setError(response.data.error);
             }
@@ -48,10 +51,10 @@ export default function LoginScreen() {
             > */}
             <Text style={{ fontSize: 32, fontWeight: 'bold', color: 'black', marginBottom: 20 }}>Welcome Back</Text>
             {
-            error
-            && (
-                <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text>
-            )
+                error
+                && (
+                    <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text>
+                )
             }
             <View style={{ width: '100%', alignItems: 'center' }}>
                 <TextInput

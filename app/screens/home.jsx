@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import {
 import { LineChart } from 'react-native-chart-kit';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const { width } = Dimensions.get('window');
 
@@ -19,6 +20,26 @@ export default function Home() {
   const insets = useSafeAreaInsets();
   const [activeTab, setActiveTab] = useState('dashboard');
 
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const userData = await AsyncStorage.getItem('user');
+        if (userData) {
+          setUser(JSON.parse(userData));
+        }
+      } catch (error) {
+        console.log('Error loading user data:', error);
+      }
+    };
+
+    loadUserData();
+  }, []);
+
+
+  // console.log("User data:", user.user.username);
   // Dummy chart data
   const chartData = {
     labels: ['Jan', 'Mar', 'May', 'Jul', 'Sep'],
@@ -50,6 +71,7 @@ export default function Home() {
             <Ionicons name="search-outline" size={20} color="#999" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.profileButton}>
+            <Text style={styles.profileButtonText}>{user ? user.user.username : 'John Doe'}</Text>
             <Ionicons name="person-circle-outline" size={28} color="#777" />
           </TouchableOpacity>
         </View>
@@ -271,6 +293,12 @@ const styles = StyleSheet.create({
   },
   profileButton: {
     padding: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+
+  },
+  profileButtonText: {
+    marginRight: 5,
   },
   scrollView: {
     flex: 1,
