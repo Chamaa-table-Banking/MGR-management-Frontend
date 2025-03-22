@@ -16,6 +16,7 @@ export default function Register() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
 
 
     const colorScheme = useColorScheme();
@@ -26,7 +27,7 @@ export default function Register() {
 
     const handleRegister = async (e: any) => {
         e.preventDefault();
-        console.log(phone, password, fullName)
+        // console.log(phone, password, fullName)
         try {
             const validateFields = validate(fullName, phone, password, confirmPassword);
             if (validateFields) {
@@ -36,7 +37,7 @@ export default function Register() {
                         setError('');
                     }, 5000);
                 } else {
-                    await auth.register(fullName, phone, password);
+                    await auth.register(fullName, email, password, phone);
                     router.push('/login');
                 }
             }
@@ -71,6 +72,15 @@ export default function Register() {
                     >
 
                     </TextInput>
+                </View>
+                <View style={styles.inputContainer}>
+                    <MaterialIcons name="email" size={20} color="#555" style={styles.icon} />
+                    <TextInput
+                        style={styles.input}
+                        placeholder='Email'
+                        placeholderTextColor="#555"
+                        onChangeText={setEmail}
+                    />
                 </View>
                 <View style={styles.inputContainer}>
                     <MaterialIcons name='phone' size={20} color='#555' style={styles.icon} />

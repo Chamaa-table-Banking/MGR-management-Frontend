@@ -1,9 +1,10 @@
 import instance from "../../../Hook/axios/axios";
-
+const url = "/api/v1/user/"
 class AuthApi {
-    async login(email: string, password: string) {
+    async login(username: string, password: string) {
         try {
-            const response = await instance.post('/auth/login', { email, password });
+            console.log(instance)
+            const response = await instance.post(`${url}login`, { username, password });
             return response.data;
         } catch (error) {
             console.error('Login failed:', error);
@@ -11,9 +12,9 @@ class AuthApi {
         }
     }
 
-    async register(name: string, phone: string, password: string) {
+    async register(username: string, email: string, password: string, phone: string) {
         try {
-            const response = await instance.post('/auth/register', { name, phone, password });
+            const response = await instance.post(`${url}register`, { username, email, password, phone });
             return response.data;
         } catch (error) {
             console.error('Registration failed:', error);

@@ -7,7 +7,7 @@ import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import auth from './api/auth/auth';
 
 export default function LoginScreen() {
-    const [phone, setPhone] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const router = useRouter();
     const [error, setError] = useState('');
@@ -20,15 +20,16 @@ export default function LoginScreen() {
         e.preventDefault();
         setError('');
         try {
-            const response = await auth.login(phone, password);
-            if (typeof response === 'object' && response !== null && response.success) {
+            const response = await auth.login(username, password);
+            if (!response.data.error) {
                 router.push('/');
             } else {
-                setError("Login failed. Please try again.");
+                setError(response.data.error);
             }
         } catch (error) {
             console.error('Login failed:', error);
-            Alert.alert('Error', 'Login failed. Please try again.');
+            setError('Login failed. Please try again.');
+            // Alert.alert('Error', 'Login failed. Please try again.');
         }
     }
 
@@ -47,14 +48,16 @@ export default function LoginScreen() {
             > */}
             <Text style={{ fontSize: 32, fontWeight: 'bold', color: 'black', marginBottom: 20 }}>Welcome Back</Text>
             {
-                error &&
-                <Text style={{ color: 'red' }}>{error}</Text>
+            error
+            && (
+                <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text>
+            )
             }
             <View style={{ width: '100%', alignItems: 'center' }}>
                 <TextInput
                     style={{ width: '80%', padding: 15, borderRadius: 25, borderColor: 'grey', borderWidth: 1, backgroundColor: '#fff', marginVertical: 10 }}
-                    placeholder="Phone Number"
-                    onChangeText={setPhone}
+                    placeholder="Username"
+                    onChangeText={setUsername}
                 />
                 <TextInput
                     style={{ width: '80%', padding: 15, borderRadius: 25, borderColor: 'grey', borderWidth: 1, backgroundColor: '#fff', marginVertical: 10 }}
