@@ -15,26 +15,26 @@ export default function LoginScreen() {
 
     const colorScheme = useColorScheme();
 
-
     const handleLogin = async (e: any) => {
-        // router.replace('./screens/home');
         e.preventDefault();
-        
+
         try {
             const response = await auth.login(username, password);
-            if (!response.data.error) {
-                console.log(response);
-                await AsyncStorage.setItem("user", JSON.stringify(response.data));
-                router.push('/screens/home');
+            const userData = response.data;
+
+            if (!userData?.error) {
+                await AsyncStorage.setItem("user", JSON.stringify(userData));
+                const destination = userData.user?.chamaid ? "/screens/home" : "/screens/groupSelection";
+                router.push(destination);
             } else {
-                setError(response.data.error);
+                setError(userData.error);
             }
         } catch (error) {
-            console.error('Login failed:', error);
-            setError('Login failed. Please try again.');
-            // Alert.alert('Error', 'Login failed. Please try again.');
+            console.error("Login failed:", error);
+            setError("Login failed. Please try again.");
         }
-    }
+    };
+
 
     // const color = colorScheme === 'dark' ? '#fff' : '#000';
 

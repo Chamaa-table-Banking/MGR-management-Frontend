@@ -54,9 +54,9 @@ export default function Home() {
 
   // Recent activity dummy data
   const recentActivity = [
-    { id: '1', name: 'Sarah Johnson', type: 'Contribution', amount: '+$200' },
-    { id: '2', name: 'Michael Smith', type: 'Contribution', amount: '+$150' },
-    { id: '3', name: 'Anna Lee', type: 'Contribution', amount: '+$175' },
+    { id: '1', name: 'Sarah Johnson', type: 'Contribution', amount: '+Ksh 200' },
+    { id: '2', name: 'Michael Smith', type: 'Contribution', amount: '+Ksh 150' },
+    { id: '3', name: 'Anna Lee', type: 'Contribution', amount: '+Ksh 175' },
   ];
 
   console.log("User data:", user);
@@ -87,8 +87,8 @@ export default function Home() {
           <View style={styles.card}>
             <View style={styles.cardContent}>
               <View>
-                <Text style={styles.cardLabel}>Total Savings</Text>
-                <Text style={styles.cardValue}>$12,450</Text>
+                <Text style={styles.cardLabel}>Total Contributions </Text>
+                <Text style={styles.cardValue}>Ksh 12,450</Text>
                 <Text style={styles.cardTrend}>↑ 8.2% from last month</Text>
               </View>
               <View style={[styles.iconCircle, styles.upTrendCircle]}>
@@ -101,7 +101,7 @@ export default function Home() {
             <View style={styles.cardContent}>
               <View>
                 <Text style={styles.cardLabel}>Next Contribution Due</Text>
-                <Text style={styles.cardValue}>$200</Text>
+                <Text style={styles.cardValue}>Ksh 200</Text>
                 <Text style={[styles.cardTrend, { color: '#ff9500' }]}>Due in 5 days</Text>
               </View>
               <View style={[styles.iconCircle, styles.timerCircle]}>
@@ -152,7 +152,7 @@ export default function Home() {
                 <View style={[styles.progressFill, { width: '69%' }]} />
                 <View style={styles.progressTextContainer}>
                   <Text style={styles.progressPercentage}>69%</Text>
-                  <Text style={styles.progressDetails}>$12,450 of $18,000</Text>
+                  <Text style={styles.progressDetails}>Ksh 12,450 of Ksh 18,000</Text>
                 </View>
               </View>
             </View>
