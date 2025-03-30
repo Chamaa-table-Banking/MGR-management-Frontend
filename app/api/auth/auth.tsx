@@ -1,15 +1,9 @@
 import axios from "axios";
 import instance from "../../../Hook/axios/axios";
 const url = "/api/v1/user/"
+const rbac = "/api/v1/rbac/user/"
 
-// to be removed 
-const instanciation = axios.create({
-    baseURL: "http://192.168.1.102:3000",
-    timeout: 10000,
-    headers: {
-        'Content-Type': 'application/json',
-    }
-})
+
 class AuthApi {
     async login(username: string, password: string) {
         try {
@@ -34,8 +28,17 @@ class AuthApi {
 
     async createRole(email: string, role: string, username: string, id: string) {
         try {
-            const response = await instanciation.post(`${url}create`, { email, role, username, id });
+            const response = await instance.post(`${rbac}create`, { email, role, username, id });
             return response.data;
+        } catch (error) {
+            console.error('Registration failed:', error);
+            throw error;
+        }
+    }
+    async getAllRoles() {
+        try {
+            const response = await instance.get('/api/v1/roles/all');
+            return response.data.data;
         } catch (error) {
             console.error('Registration failed:', error);
             throw error;

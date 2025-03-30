@@ -59,6 +59,8 @@ export default function Home() {
     { id: '3', name: 'Anna Lee', type: 'Contribution', amount: '+$175' },
   ];
 
+  console.log("User data:", user);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />

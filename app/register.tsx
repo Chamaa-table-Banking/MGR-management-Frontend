@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ImageBackground, StyleSheet, useColorScheme } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
@@ -13,12 +13,14 @@ import validate from './function/validateregistration';
 
 
 
+
 export default function Register() {
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
+    const [memberRole, setMemberRole] = useState('');
 
 
     const colorScheme = useColorScheme();
@@ -27,29 +29,48 @@ export default function Register() {
 
     const router = useRouter();
 
+    const getMemberRole = async () => {
+        try {
+            // filter the returned roles from all roles and get the member role
+            const roles = await auth.getAllRoles();
+            if (roles.length === 0) return;
+            console.log(roles)
+            setMemberRole(roles?.data?.filter((role: any) => role.name === 'member')[0].id);
+        } catch (error) {
+            console.error('Failed to get member role:', error);
+        }
+    }
+
+    useEffect(() => {
+        getMemberRole();
+    }, []);
+
+
+    console.log("member", memberRole)
+
     const handleRegister = async (e: any) => {
         e.preventDefault();
-        
+
         try {
             // Validate form fields
             const validationResult = validate(fullName, phone, password, confirmPassword);
-            
+
             if (!validationResult) {
                 return;
             }
-            
+
             if (typeof validationResult === 'object' && validationResult.message) {
                 setError(validationResult.message);
                 setTimeout(() => setError(''), 5000);
                 return;
             }
-            
+
             // Proceed with registration
             const res = await auth.register(fullName, email, password, phone);
-            
+
             if (res.data.id) {
-                const defaultRole = 'f869a850-4d9d-4598-9311-ec3bb744f688';
-                await auth.createRole(email, defaultRole, fullName, res.data.id);
+                const response = await auth.createRole(email, memberRole, fullName, res.data.id);
+                console.log(response);
                 router.push('/login');
             }
         } catch (error) {

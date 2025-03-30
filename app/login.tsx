@@ -19,7 +19,7 @@ export default function LoginScreen() {
     const handleLogin = async (e: any) => {
         // router.replace('./screens/home');
         e.preventDefault();
-        setError('');
+        
         try {
             const response = await auth.login(username, password);
             if (!response.data.error) {
