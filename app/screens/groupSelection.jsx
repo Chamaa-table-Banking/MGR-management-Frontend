@@ -1,16 +1,19 @@
 import React from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TouchableOpacity, 
-  SafeAreaView, 
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
   StatusBar,
   Dimensions
 } from 'react-native';
+import { useRouter } from 'expo-router';
 import { Svg, Circle, Path, Line } from 'react-native-svg';
 
 const GroupSelectionScreen = ({ navigation }) => {
+  const router = useRouter();
+
   const handleBrowseGroups = () => {
     // Navigate to browse groups screen
     // navigation.navigate('BrowseGroups');
@@ -18,20 +21,18 @@ const GroupSelectionScreen = ({ navigation }) => {
   };
 
   const handleCreateGroup = () => {
-    // Navigate to create group screen
-    // navigation.navigate('CreateGroup');
-    console.log('Navigate to create group');
+    router.push('/screens/ChamaCreationForm');
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content"/>
-      
+      <StatusBar barStyle="dark-content" />
+
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.logo}>Merry-Go-Round</Text>
       </View>
-      
+
       {/* Welcome Message */}
       <View style={styles.welcomeSection}>
         <Text style={styles.welcomeTitle}>Welcome to Merry-Go-Round!</Text>
@@ -39,79 +40,79 @@ const GroupSelectionScreen = ({ navigation }) => {
           You're not part of any group yet. Get started by joining a group or creating your own.
         </Text>
       </View>
-      
+
       {/* Cards Container */}
       <View style={styles.cardsContainer}>
         {/* Join Group Card */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Join a Group</Text>
-          
+
           <View style={styles.iconContainer}>
             <Svg height="80" width="80" viewBox="0 0 80 80">
               <Circle cx="40" cy="40" r="40" fill="#e8f5e9" />
               <Circle cx="40" cy="30" r="10" fill="#2e8b57" />
-              <Path 
-                d="M20 50 C20 40, 30 30, 40 30 C50 30, 60 40, 60 50" 
-                stroke="green" 
-                strokeWidth="2" 
-                fill="transparent" 
+              <Path
+                d="M20 50 C20 40, 30 30, 40 30 C50 30, 60 40, 60 50"
+                stroke="green"
+                strokeWidth="2"
+                fill="transparent"
               />
               <Circle cx="20" cy="50" r="8" fill="#2e8b57" />
               <Circle cx="60" cy="50" r="8" fill="#2e8b57" />
             </Svg>
           </View>
-          
+
           <Text style={styles.cardText}>
             Connect with existing groups and collaborate with others
           </Text>
-          
-          <TouchableOpacity 
-            style={styles.actionButton} 
+
+          <TouchableOpacity
+            style={styles.actionButton}
             onPress={handleBrowseGroups}
           >
             <Text style={styles.buttonText}>Browse Groups</Text>
           </TouchableOpacity>
         </View>
-        
+
         {/* Create Group Card */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Create a Group</Text>
-          
+
           <View style={styles.iconContainer}>
             <Svg height="80" width="80" viewBox="0 0 80 80">
               <Circle cx="40" cy="40" r="40" fill="#e8f5e9" />
-              <Line 
-                x1="20" 
-                y1="40" 
-                x2="60" 
-                y2="40" 
-                stroke="green" 
-                strokeWidth="3" 
+              <Line
+                x1="20"
+                y1="40"
+                x2="60"
+                y2="40"
+                stroke="green"
+                strokeWidth="3"
               />
-              <Line 
-                x1="40" 
-                y1="20" 
-                x2="40" 
-                y2="60" 
-                stroke="green" 
-                strokeWidth="3" 
+              <Line
+                x1="40"
+                y1="20"
+                x2="40"
+                y2="60"
+                stroke="green"
+                strokeWidth="3"
               />
             </Svg>
           </View>
-          
+
           <Text style={styles.cardText}>
             Start your own group and invite others to join
           </Text>
-          
-          <TouchableOpacity 
-            style={styles.actionButton} 
+
+          <TouchableOpacity
+            style={styles.actionButton}
             onPress={handleCreateGroup}
           >
             <Text style={styles.buttonText}>Create Group</Text>
           </TouchableOpacity>
         </View>
       </View>
-      
+
       {/* Footer */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>
