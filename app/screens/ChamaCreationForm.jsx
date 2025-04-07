@@ -481,12 +481,7 @@ const ChamaCreationForm = () => {
                             </View>
                         </View>
 
-                        <TouchableOpacity
-                            style={styles.submitButton}
-                            onPress={handleSubmit}
-                        >
-                            <Text style={styles.submitButtonText}>Create Chama Group</Text>
-                        </TouchableOpacity>
+
                     </ScrollView>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -504,13 +499,21 @@ const ChamaCreationForm = () => {
 
                 <View style={{ flex: 1 }} />
 
-                {currentSlide < 2 && (
+                {currentSlide < 2 ? (
                     <TouchableOpacity
                         style={styles.navButton}
                         onPress={() => navigateToSlide(currentSlide + 1)}
                     >
                         <Text style={styles.navButtonText}>Next</Text>
                         <AntDesign name="arrowright" size={20} color="#fff" />
+                    </TouchableOpacity>
+                ) : (
+                    <TouchableOpacity
+                        style={[styles.navButton, { backgroundColor: '#28a745' }]} // Darker green for submit
+                        onPress={handleSubmit}
+                    >
+                        <Text style={styles.navButtonText}>Submit</Text>
+                        <AntDesign name="check" size={20} color="#fff" />
                     </TouchableOpacity>
                 )}
             </View>
@@ -527,7 +530,7 @@ const styles = StyleSheet.create({
         backgroundColor: PRIMARY_COLOR,
         paddingVertical: 16,
         paddingHorizontal: 20,
-        
+
         elevation: 4,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
