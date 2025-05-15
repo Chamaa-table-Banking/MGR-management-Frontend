@@ -25,7 +25,7 @@ export default function LoginScreen() {
             if (!userData?.error) {
                 await AsyncStorage.setItem("user", JSON.stringify(userData));
                 const destination = userData.user?.chamaid ? "/screens/home" : "/screens/groupSelection";
-                router.push(destination);
+                router.push("/screens/home");
             } else {
                 setError(userData.error);
             }
