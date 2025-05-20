@@ -10,7 +10,7 @@ import {
   ScrollView
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Svg, Circle, Path, Line } from 'react-native-svg';
+import Svg, { Circle, Path, Line } from 'react-native-svg';
 
 const GroupSelectionScreen = ({ navigation }) => {
   const router = useRouter();

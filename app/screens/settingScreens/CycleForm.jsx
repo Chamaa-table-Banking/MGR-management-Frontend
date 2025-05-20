@@ -13,6 +13,9 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { StatusBar } from 'expo-status-bar';
+import chamaApi from "../../api/chama"
+import cycleApi from '../../api/cycles';
+import { Alert } from 'react-native';
 
 
 // Theme colors from our previous conversation
@@ -27,9 +30,9 @@ const COLORS = {
     error: '#F44336',        // Red
 };
 
-const ChamaForm = ({ initialData, onSubmit }) => {
+const CycleForm = ({ initialData }) => {
     const [formData, setFormData] = useState({
-        chamaa_id: initialData?.chamaa_id || '',
+        chamaa_id: '',
         start_date: initialData?.start_date ? new Date(initialData.start_date) : new Date(),
         end_date: initialData?.end_date ? new Date(initialData.end_date) : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // Default to 1 year later
         max_people: initialData?.max_people?.toString() || '',
@@ -41,11 +44,55 @@ const ChamaForm = ({ initialData, onSubmit }) => {
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
+    const [chamaName, setChamaName] = useState("")
 
     const statusBarBgColor = darkMode ? '#121212' : '#ffffff';
 
 
+    const getChamaId = async () => {
+        const searchData = {
+            name: chamaName,
+            searchType: "contains"
+        };
 
+        try {
+            const response = await chamaApi.getChamaByName(searchData);
+            console.log("getChamaByName response:", response);
+
+            if (response?.id) {
+                setFormData(prev => ({
+                    ...prev,
+                    chamaa_id: response.id
+                }));
+
+                // Clear error if previously set
+                if (errors.chamaa_id) {
+                    setErrors(prev => ({
+                        ...prev,
+                        chamaa_id: null
+                    }));
+                }
+            } else {
+                setErrors(prev => ({
+                    ...prev,
+                    chamaa_id: 'Chama not found'
+                }));
+            }
+        } catch (error) {
+            console.error("Error fetching chama:", error);
+            setErrors(prev => ({
+                ...prev,
+                chamaa_id: 'Failed to fetch chama'
+            }));
+        }
+    };
+
+
+    useEffect(() => {
+        if (chamaName.trim().length > 0) {
+            getChamaId();
+        }
+    }, [chamaName])
 
 
     const handleInputChange = (field, value) => {
@@ -81,7 +128,7 @@ const ChamaForm = ({ initialData, onSubmit }) => {
 
         // Validate chamaa_id
         if (!formData.chamaa_id) {
-            newErrors.chamaa_id = 'Chama ID is required';
+            newErrors.chamaa_id = 'Chama Name is required';
         }
 
         // Validate dates
@@ -108,9 +155,9 @@ const ChamaForm = ({ initialData, onSubmit }) => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = () => {
+
+    const handleSubmit = async () => {
         if (validate()) {
-            // Convert string values to appropriate types
             const submissionData = {
                 chamaa_id: formData.chamaa_id,
                 start_date: formData.start_date.toISOString(),
@@ -120,9 +167,42 @@ const ChamaForm = ({ initialData, onSubmit }) => {
                 interval_in_days: parseInt(formData.interval_in_days, 10),
             };
 
-            onSubmit(submissionData);
+            try {
+                const response = await cycleApi.createCyle(submissionData);
+
+                console.log(response)
+
+                if (response?.message == "Cycle created successfully") {
+                    Alert.alert("Success", "Cycle created successfully!");
+
+                    // Clear the form
+                    setFormData({
+                        chamaa_id: '',
+                        start_date: new Date(),
+                        end_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+                        max_people: '',
+                        amount_per_member: '',
+                        interval_in_days: '',
+                    });
+
+                    setChamaName(""); // clear the chama name
+                    setErrors({});     // clear any previous errors
+                } else {
+                    setErrors(prev => ({
+                        ...prev,
+                        submit: "Failed to create cycle. Please try again.",
+                    }));
+                }
+            } catch (error) {
+                console.error("Error submitting cycle:", error);
+                setErrors(prev => ({
+                    ...prev,
+                    submit: "An unexpected error occurred. Please try again.",
+                }));
+            }
         }
     };
+
 
     const formatDate = (date) => {
         return date.toLocaleDateString('en-US', {
@@ -147,15 +227,15 @@ const ChamaForm = ({ initialData, onSubmit }) => {
                 style={styles.keyboardAvoid}
             >
                 <ScrollView contentContainerStyle={styles.scrollContent}>
-                    <Text style={styles.title}>Create Chama Collection</Text>
+                    <Text style={styles.title}>Create Chama</Text>
 
                     <View style={styles.formGroup}>
-                        <Text style={styles.label}>Chama ID</Text>
+                        <Text style={styles.label}>Chama Name</Text>
                         <TextInput
                             style={styles.input}
-                            value={formData.chamaa_id}
-                            onChangeText={(value) => handleInputChange('chamaa_id', value)}
-                            placeholder="Enter Chama ID"
+                            value={chamaName}
+                            onChangeText={(text) => setChamaName(text)}
+                            placeholder="Enter Chama Name"
                             placeholderTextColor={COLORS.textLight}
                         />
                         {errors.chamaa_id && <Text style={styles.errorText}>{errors.chamaa_id}</Text>}
@@ -352,4 +432,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ChamaForm;
+export default CycleForm;
