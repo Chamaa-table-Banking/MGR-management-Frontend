@@ -13,6 +13,23 @@ class CyclesApi {
             throw error;
         }
     }
+    async createChamaCycle(data: {
+        chamaa_id: string;
+        start_date: string;
+        end_date: string;
+        max_people: number;
+        amount_per_member: number;
+        interval_in_days: number;
+    }) {
+        try {
+            const response = await instance.post('/api/v1/cycles/create', data);
+            return response.data;
+        } catch (error) {
+            console.error('Registration failed:', error);
+            throw error;
+        }
+    }
+
 }
 
 const cycleApi = new CyclesApi()

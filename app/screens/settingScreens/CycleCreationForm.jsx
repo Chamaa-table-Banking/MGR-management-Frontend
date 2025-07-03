@@ -13,10 +13,10 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { StatusBar } from 'expo-status-bar';
-import chamaApi from "../../api/chama"
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
 import cycleApi from '../../api/cycles';
-import { Alert } from 'react-native';
-
+import { useRouter } from 'expo-router';
 
 // Theme colors from our previous conversation
 const COLORS = {
@@ -30,9 +30,9 @@ const COLORS = {
     error: '#F44336',        // Red
 };
 
-const CycleForm = ({ initialData }) => {
+const CycleCreationForm = ({ initialData }) => {
     const [formData, setFormData] = useState({
-        chamaa_id: '',
+        chamaa_id: initialData?.chamaa_id || '',
         start_date: initialData?.start_date ? new Date(initialData.start_date) : new Date(),
         end_date: initialData?.end_date ? new Date(initialData.end_date) : new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // Default to 1 year later
         max_people: initialData?.max_people?.toString() || '',
@@ -44,55 +44,33 @@ const CycleForm = ({ initialData }) => {
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
-    const [chamaName, setChamaName] = useState("")
+    const router = useRouter();
 
     const statusBarBgColor = darkMode ? '#121212' : '#ffffff';
-
-
-    const getChamaId = async () => {
-        const searchData = {
-            name: chamaName,
-            searchType: "contains"
-        };
-
-        try {
-            const response = await chamaApi.getChamaByName(searchData);
-            console.log("getChamaByName response:", response);
-
-            if (response?.id) {
-                setFormData(prev => ({
-                    ...prev,
-                    chamaa_id: response.id
-                }));
-
-                // Clear error if previously set
-                if (errors.chamaa_id) {
-                    setErrors(prev => ({
-                        ...prev,
-                        chamaa_id: null
-                    }));
-                }
-            } else {
-                setErrors(prev => ({
-                    ...prev,
-                    chamaa_id: 'Chama not found'
-                }));
-            }
-        } catch (error) {
-            console.error("Error fetching chama:", error);
-            setErrors(prev => ({
-                ...prev,
-                chamaa_id: 'Failed to fetch chama'
-            }));
-        }
-    };
-
+    // const [userId, setUserId] = useState(null);
+    const [chamaaOptions, setChamaaOptions] = useState([]);
 
     useEffect(() => {
-        if (chamaName.trim().length > 0) {
-            getChamaId();
-        }
-    }, [chamaName])
+        const loadUserData = async () => {
+            try {
+                const userData = await AsyncStorage.getItem('user');
+                if (userData) {
+                    const parsedData = JSON.parse(userData);
+                    const user = parsedData.user;
+                    const allChamas = user.chamaa?.data || [];
+                    const ownedChamas = allChamas.filter(
+                        (chamaa) => chamaa.chairperson === user.id
+                    );
+                    setChamaaOptions(ownedChamas);
+                    // setUserId(user.id);
+                }
+            } catch (error) {
+                console.log('Error loading user data:', error);
+            }
+        };
+
+        loadUserData();
+    }, []);
 
 
     const handleInputChange = (field, value) => {
@@ -128,7 +106,7 @@ const CycleForm = ({ initialData }) => {
 
         // Validate chamaa_id
         if (!formData.chamaa_id) {
-            newErrors.chamaa_id = 'Chama Name is required';
+            newErrors.chamaa_id = 'Chama ID is required';
         }
 
         // Validate dates
@@ -155,7 +133,6 @@ const CycleForm = ({ initialData }) => {
         return Object.keys(newErrors).length === 0;
     };
 
-
     const handleSubmit = async () => {
         if (validate()) {
             const submissionData = {
@@ -167,39 +144,15 @@ const CycleForm = ({ initialData }) => {
                 interval_in_days: parseInt(formData.interval_in_days, 10),
             };
 
-            try {
-                const response = await cycleApi.createCyle(submissionData);
+            // ✅ Do something here with submissionData (e.g. API, log, navigation)
+            console.log('Submitting:', submissionData);
+            const res = await cycleApi.createChamaCycle(submissionData);
+            console.log(res);
 
-                console.log(response)
-
-                if (response?.message == "Cycle created successfully") {
-                    Alert.alert("Success", "Cycle created successfully!");
-
-                    // Clear the form
-                    setFormData({
-                        chamaa_id: '',
-                        start_date: new Date(),
-                        end_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
-                        max_people: '',
-                        amount_per_member: '',
-                        interval_in_days: '',
-                    });
-
-                    setChamaName(""); // clear the chama name
-                    setErrors({});     // clear any previous errors
-                } else {
-                    setErrors(prev => ({
-                        ...prev,
-                        submit: "Failed to create cycle. Please try again.",
-                    }));
-                }
-            } catch (error) {
-                console.error("Error submitting cycle:", error);
-                setErrors(prev => ({
-                    ...prev,
-                    submit: "An unexpected error occurred. Please try again.",
-                }));
-            }
+            // Example (optional): show a success message
+            alert('Cycle created successfully!');
+            // go back to setting screen./ 
+            router.push('screens/tabs/settings');
         }
     };
 
@@ -227,19 +180,24 @@ const CycleForm = ({ initialData }) => {
                 style={styles.keyboardAvoid}
             >
                 <ScrollView contentContainerStyle={styles.scrollContent}>
-                    <Text style={styles.title}>Create Chama</Text>
+                    <Text style={styles.title}>Create Chama Cycle</Text>
 
                     <View style={styles.formGroup}>
-                        <Text style={styles.label}>Chama Name</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={chamaName}
-                            onChangeText={(text) => setChamaName(text)}
-                            placeholder="Enter Chama Name"
-                            placeholderTextColor={COLORS.textLight}
-                        />
+                        <Text style={styles.label}>Select Chama (You're Chairperson)</Text>
+                        <View style={styles.pickerWrapper}>
+                            <Picker
+                                selectedValue={formData.chamaa_id}
+                                onValueChange={(value) => handleInputChange('chamaa_id', value)}
+                            >
+                                <Picker.Item label="-- Select a Chama --" value="" />
+                                {chamaaOptions.map((chamaa) => (
+                                    <Picker.Item key={chamaa.id} label={chamaa.name} value={chamaa.id} />
+                                ))}
+                            </Picker>
+                        </View>
                         {errors.chamaa_id && <Text style={styles.errorText}>{errors.chamaa_id}</Text>}
                     </View>
+
 
                     <View style={styles.formGroup}>
                         <Text style={styles.label}>Start Date</Text>
@@ -430,6 +388,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    pickerWrapper: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        backgroundColor: COLORS.surface,
+        overflow: 'hidden',
+    },
+
 });
 
-export default CycleForm;
+export default CycleCreationForm;

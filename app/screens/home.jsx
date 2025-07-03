@@ -8,7 +8,7 @@ import DashboardScreen from './tabs/DashboardScreen';
 // import TransactionsScreen from './screens/TransactionsScreen';
 // import GroupsScreen from './screens/GroupsScreen';
 // import ReportsScreen from './screens/ReportsScreen';
-import SettingsScreen from './tabs/SettingsScreen ';
+import SettingsScreen from './tabs/settings';
 
 const MainScreen = () => {
   const [activeTab, setActiveTab] = useState('');

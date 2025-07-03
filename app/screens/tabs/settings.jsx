@@ -11,7 +11,7 @@ import {
     Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import ChamaForm from '../settingScreens/CycleForm';
+// import ChamaForm from '../settingScreens/CycleForm';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -180,7 +180,7 @@ const SettingsScreen = () => {
                         iconColor="#9c27b0"
                         title="Cycle Settings"
                         subtitle="Create cycle"
-                        action={() => router.push('screens/settingScreens/CycleForm')} // Navigate to the cycle adding form
+                        action={() => router.push('screens/settingScreens/CycleCreationForm')} // Navigate to the cycle adding form
                     />
                     <SettingsItem
                         icon="cash-outline"
