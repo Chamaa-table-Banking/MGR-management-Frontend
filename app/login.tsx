@@ -24,8 +24,9 @@ export default function LoginScreen() {
 
             if (!userData?.error) {
                 await AsyncStorage.setItem("user", JSON.stringify(userData));
-                const destination = userData.user?.chamaid ? "/screens/home" : "/screens/groupSelection";
-                router.push("/screens/home");
+                const destination = userData.user?.chamaa.message === "No chamaa found for this user" ? "/screens/groupSelection" : "/screens/home";
+                router.replace(destination);
+                // router.push("/screens/home");
             } else {
                 setError(userData.error);
             }

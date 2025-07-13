@@ -180,7 +180,7 @@ const CycleCreationForm = ({ initialData }) => {
                 style={styles.keyboardAvoid}
             >
                 <ScrollView contentContainerStyle={styles.scrollContent}>
-                    <Text style={styles.title}>Create Chama Cycle</Text>
+                    <Text style={styles.title}>Create Cycle</Text>
 
                     <View style={styles.formGroup}>
                         <Text style={styles.label}>Select Chama (You're Chairperson)</Text>

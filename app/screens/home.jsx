@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -6,13 +6,44 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 // Import your screen components
 import DashboardScreen from './tabs/DashboardScreen';
 // import TransactionsScreen from './screens/TransactionsScreen';
-// import GroupsScreen from './screens/GroupsScreen';
+import Groups from './tabs/Groups';
 // import ReportsScreen from './screens/ReportsScreen';
 import SettingsScreen from './tabs/settings';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MainScreen = () => {
-  const [activeTab, setActiveTab] = useState('');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const insets = useSafeAreaInsets();
+
+
+
+  useEffect(() => {
+    const loadSavedTab = async () => {
+      try {
+        const savedTab = await AsyncStorage.getItem('activeTab');
+        if (savedTab) {
+          setActiveTab(savedTab);
+        }
+      } catch (error) {
+        console.log('Error loading saved tab:', error);
+      }
+    };
+
+    loadSavedTab();
+  }, []);
+
+
+  useEffect(() => {
+    const saveTab = async () => {
+      try {
+        await AsyncStorage.setItem('activeTab', activeTab);
+      } catch (error) {
+        console.log('Error saving tab:', error);
+      }
+    };
+
+    if (activeTab) saveTab();
+  }, [activeTab]);
 
   // Function to render the active screen based on activeTab
   const renderScreen = () => {
@@ -22,13 +53,13 @@ const MainScreen = () => {
       case 'transactions':
         return <TransactionsScreen />;
       case 'groups':
-        return <GroupsScreen />;
+        return <Groups />;
       case 'reports':
         return <ReportsScreen />;
       case 'settings':
         return <SettingsScreen />;
-      default:
-        return <DashboardScreen />;
+      // default:
+      //   return <DashboardScreen />;
     }
   };
 

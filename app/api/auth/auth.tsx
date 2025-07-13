@@ -44,6 +44,15 @@ class AuthApi {
             throw error;
         }
     }
+    async getUserById(id: string) {
+        try {
+            const response = await instance.get(`${url}one/${id}`);
+            return response.data.data;
+        } catch (error) {
+            console.error('Registration failed:', error);
+            throw error;
+        }
+    }
 }
 
 const auth = new AuthApi();

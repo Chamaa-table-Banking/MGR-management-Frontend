@@ -14,9 +14,9 @@ class ChamaApi {
         }
 
     }
-    async getAllChamas() {
+    async getAllChamas(data: { page: number, limit: number }) {
         try {
-            const response = await instance.get(`${url}/all`);
+            const response = await instance.get(`${url}/getall`, { params: data });
             return response.data.data;
         } catch (error) {
             console.error('Registration failed:', error);
@@ -32,6 +32,24 @@ class ChamaApi {
             throw error;
         }
 
+    }
+    async getChamaByUser(data: { page: number, user_id: string }) {
+        try {
+            const response = await instance.post(`${url}/get/chamas/by/user`, data);
+            return response.data.data;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+    async joinChama(data: { chamaa_id: string, user_id: string }) {
+        try {
+            const response = await instance.post(`${url}/join`, data);
+            return response.data.data;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
     }
 }
 

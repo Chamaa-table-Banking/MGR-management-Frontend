@@ -63,7 +63,7 @@ const LandingPage: React.FC = () => {
         if (currentIndex < slides.length - 1 && slidesRef.current) {
             slidesRef.current.scrollToIndex({ index: currentIndex + 1 });
         } else {
-            router.push('/login');
+            router.replace('/login');
         }
     };
 
@@ -138,7 +138,7 @@ const LandingPage: React.FC = () => {
             </View>
 
             <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={() => router.push('/login')} style={styles.skipButton}>
+                <TouchableOpacity onPress={() => router.replace('/login')} style={styles.skipButton}>
                     <Text style={[styles.skipButtonText, { color: isDarkMode ? '#ffffff' : 'green' }]}>Skip</Text>
                 </TouchableOpacity>
 
