@@ -7,9 +7,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { BlurView, } from 'expo-blur';
 import { FontAwesome } from '@expo/vector-icons';
 // import axios from 'axios';
-import auth from './api/auth/auth';
+import auth from '../api/auth/auth';
 
-import validate from './function/validateregistration';
+import validate from '../function/validateregistration';
 
 
 

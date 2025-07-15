@@ -29,6 +29,15 @@ class CyclesApi {
             throw error;
         }
     }
+    async getChamaCycles(id: string) {
+        try {
+            const response = await instance.get(`${url}/chamaa/${id}`)
+            return response.data
+        } catch (error) {
+            console.error("Cycle creation failed", error)
+            throw error;
+        }
+    }
 
 }
 

@@ -4,11 +4,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Import your screen components
-import DashboardScreen from './tabs/DashboardScreen';
+import DashboardScreen from '../(tabs)/dashboard';
 // import TransactionsScreen from './screens/TransactionsScreen';
-import Groups from './tabs/Groups';
+import Groups from '../(tabs)/groups';
 // import ReportsScreen from './screens/ReportsScreen';
-import SettingsScreen from './tabs/settings';
+import SettingsScreen from '../(tabs)/settings';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MainScreen = () => {

@@ -20,7 +20,7 @@ import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 
-const ChamaJoiningScreen = ({ goBack }) => {
+const ChamaJoiningScreen = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [darkMode, setDarkMode] = useState(false);
     const [userId, setUserId] = useState(null);
@@ -152,7 +152,7 @@ const ChamaJoiningScreen = ({ goBack }) => {
                                         text: 'OK',
                                         onPress: () => {
                                             // Refresh data or navigate to groups screen
-                                            goBack
+                                            router.push('/(tabs)/groups');
                                         },
                                     },
                                 ]
@@ -295,11 +295,11 @@ const ChamaJoiningScreen = ({ goBack }) => {
             <StatusBar backgroundColor={statusBarBgColor} barStyle={statusBarStyle} />
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 {/* Header */}
-                <View style={styles.header}>
+                {/* <View style={styles.header}>
                     <View style={styles.headerContent}>
                         <TouchableOpacity
                             style={styles.myGroupsButton}
-                            onPress={goBack}
+                            onPress={}
                         >
                             <Text style={styles.myGroupsButtonText}>
                                 🔙  Back
@@ -314,7 +314,7 @@ const ChamaJoiningScreen = ({ goBack }) => {
 
 
                     </View>
-                </View>
+                </View> */}
 
                 <View style={styles.content}>
                     {/* Search */}

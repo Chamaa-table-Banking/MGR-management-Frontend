@@ -68,7 +68,7 @@ export default function Home() {
             <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
 
             {/* Top Bar */}
-            <View style={styles.header}>
+            {/* <View style={styles.header}>
                 <Text style={styles.headerTitle}>GroupSave</Text>
                 <View style={styles.headerRight}>
                     <TouchableOpacity style={styles.searchButton}>
@@ -80,10 +80,10 @@ export default function Home() {
                     </TouchableOpacity>
 
                 </View>
-            </View>
+            </View> */}
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-                <Text style={styles.pageTitle}>Dashboard</Text>
+                {/* <Text style={styles.pageTitle}>Dashboard</Text> */}
 
                 {/* Balance Cards */}
                 <View style={styles.cardsContainer}>

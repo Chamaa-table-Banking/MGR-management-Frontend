@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
-import auth from './api/auth/auth';
+import auth from '../api/auth/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen() {
@@ -15,7 +15,7 @@ export default function LoginScreen() {
 
     const colorScheme = useColorScheme();
 
-    const handleLogin = async (e: any) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
 
         try {
@@ -24,9 +24,12 @@ export default function LoginScreen() {
 
             if (!userData?.error) {
                 await AsyncStorage.setItem("user", JSON.stringify(userData));
-                const destination = userData.user?.chamaa.message === "No chamaa found for this user" ? "/screens/groupSelection" : "/screens/home";
-                router.replace(destination);
-                // router.push("/screens/home");
+                if (userData.user?.chamaa.message === "No chamaa found for this user") {
+                    router.replace("/groupSelection"); // ✅ TS now knows this is valid
+                } else {
+                    router.replace("/dashboard") // ✅ Valid too
+                }
+
             } else {
                 setError(userData.error);
             }

@@ -1,4 +1,9 @@
-import React, { useState } from 'react';
+export const unstable_settings = {
+    // Hide from the tab bar, but still render inside tab layout
+    hideFromTabs: true,
+};
+
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -12,6 +17,23 @@ import {
     DatePickerIOS
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { StatusBar } from 'expo-status-bar';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
+// import cycleApi from '../../api/cycles';
+import cycleApi from '../../api/cycles';
+import { useRouter } from 'expo-router';
+
+
+// export const unstable_settings = {
+//     // This tells Expo Router to treat this screen as a regular screen, not a tab
+//     initialRouteName: 'settings',
+// };
+
+// export const screenOptions = {
+//     // This hides it from the bottom tab bar
+//     tabBarStyle: { display: 'none' },
+// };
 
 // Theme colors from our previous conversation
 const COLORS = {
@@ -25,7 +47,7 @@ const COLORS = {
     error: '#F44336',        // Red
 };
 
-const CreateCycle = ({ initialData, onSubmit }) => {
+const CycleCreationForm = ({ initialData, goBack }) => {
     const [formData, setFormData] = useState({
         chamaa_id: initialData?.chamaa_id || '',
         start_date: initialData?.start_date ? new Date(initialData.start_date) : new Date(),
@@ -38,6 +60,35 @@ const CreateCycle = ({ initialData, onSubmit }) => {
     const [errors, setErrors] = useState({});
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
+    const router = useRouter();
+
+    const statusBarBgColor = darkMode ? '#121212' : '#ffffff';
+    // const [userId, setUserId] = useState(null);
+    const [chamaaOptions, setChamaaOptions] = useState([]);
+
+    useEffect(() => {
+        const loadUserData = async () => {
+            try {
+                const userData = await AsyncStorage.getItem('user');
+                if (userData) {
+                    const parsedData = JSON.parse(userData);
+                    const user = parsedData.user;
+                    const allChamas = user.chamaa?.data || [];
+                    const ownedChamas = allChamas.filter(
+                        (chamaa) => chamaa.chairperson === user.id
+                    );
+                    setChamaaOptions(ownedChamas);
+                    // setUserId(user.id);
+                }
+            } catch (error) {
+                console.log('Error loading user data:', error);
+            }
+        };
+
+        loadUserData();
+    }, []);
+
 
     const handleInputChange = (field, value) => {
         setFormData({
@@ -99,9 +150,8 @@ const CreateCycle = ({ initialData, onSubmit }) => {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validate()) {
-            // Convert string values to appropriate types
             const submissionData = {
                 chamaa_id: formData.chamaa_id,
                 start_date: formData.start_date.toISOString(),
@@ -111,9 +161,18 @@ const CreateCycle = ({ initialData, onSubmit }) => {
                 interval_in_days: parseInt(formData.interval_in_days, 10),
             };
 
-            onSubmit(submissionData);
+            // ✅ Do something here with submissionData (e.g. API, log, navigation)
+            console.log('Submitting:', submissionData);
+            const res = await cycleApi.createChamaCycle(submissionData);
+            console.log(res);
+
+            // Example (optional): show a success message
+            alert('Cycle created successfully!');
+            // go back to setting screen./ 
+            router.push('(tabs)/settings');
         }
     };
+
 
     const formatDate = (date) => {
         return date.toLocaleDateString('en-US', {
@@ -123,26 +182,44 @@ const CreateCycle = ({ initialData, onSubmit }) => {
         });
     };
 
+
+
+    const [statusBarStyle, setStatusBarStyle] = useState('dark');
+    useEffect(() => {
+        setStatusBarStyle(darkMode ? 'light' : 'dark');
+    }, [darkMode]);
     return (
         <SafeAreaView style={styles.container}>
+            <StatusBar style={statusBarStyle} backgroundColor={statusBarBgColor} />
+
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.keyboardAvoid}
             >
                 <ScrollView contentContainerStyle={styles.scrollContent}>
-                    <Text style={styles.title}>Create Chama Collection</Text>
-
+                    {/* <View style={styles.header}>
+                        {/* back button  */}
+                    {/* <TouchableOpacity onPress={goBack}>
+                            <Text style={styles.backTitle}>Back</Text>
+                        </TouchableOpacity> */}
+                    {/* <Text style={styles.title}>Create Cycle</Text> */}
+                    {/* </View> */}
                     <View style={styles.formGroup}>
-                        <Text style={styles.label}>Chama ID</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={formData.chamaa_id}
-                            onChangeText={(value) => handleInputChange('chamaa_id', value)}
-                            placeholder="Enter Chama ID"
-                            placeholderTextColor={COLORS.textLight}
-                        />
+                        <Text style={styles.label}>Select Chama (You're Chairperson)</Text>
+                        <View style={styles.pickerWrapper}>
+                            <Picker
+                                selectedValue={formData.chamaa_id}
+                                onValueChange={(value) => handleInputChange('chamaa_id', value)}
+                            >
+                                <Picker.Item label="-- Select a Chama --" value="" />
+                                {chamaaOptions.map((chamaa) => (
+                                    <Picker.Item key={chamaa.id} label={chamaa.name} value={chamaa.id} />
+                                ))}
+                            </Picker>
+                        </View>
                         {errors.chamaa_id && <Text style={styles.errorText}>{errors.chamaa_id}</Text>}
                     </View>
+
 
                     <View style={styles.formGroup}>
                         <Text style={styles.label}>Start Date</Text>
@@ -275,6 +352,18 @@ const styles = StyleSheet.create({
     scrollContent: {
         padding: 20,
     },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+    },
+    backTitle: {
+        color: COLORS.primary,
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+
     title: {
         fontSize: 24,
         fontWeight: 'bold',
@@ -333,6 +422,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    pickerWrapper: {
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        backgroundColor: COLORS.surface,
+        overflow: 'hidden',
+    },
+
 });
 
-export default CreateCycle;
+export default CycleCreationForm;

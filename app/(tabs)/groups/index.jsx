@@ -15,7 +15,7 @@ import chamaApi from '../../api/chama';
 import auth from '../../api/auth/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import ChamaJoiningScreen from './ChamaJoining';
+import ChamaJoiningScreen from './chamaJoining';
 
 
 const { width } = Dimensions.get('window');
@@ -152,6 +152,12 @@ const ChamaGroupsScreen = () => {
     //     router.push('ChamaJoining');
     // };
 
+    const navigateToGroup = (groupId) => () => {
+        router.push({
+            pathname: '/(tabs)/groups/[groupId]',
+            params: { groupId: groupId },
+        })
+    }
 
     if (showJoiningScreen) {
         return <ChamaJoiningScreen goBack={() => setShowJoiningScreen(false)} />;
@@ -196,7 +202,9 @@ const ChamaGroupsScreen = () => {
             <View style={styles.groupFooter}>
                 <Text style={styles.nextMeeting}>📅 Started: {formatDate(group.created_at)}</Text>
                 <View style={styles.growthBadge}>
-                    <Text style={styles.growthText}>📈 {group.growth}</Text>
+                    <TouchableOpacity onPress={navigateToGroup(group.id)}>
+                        <Text style={styles.growthText}>👀 View</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
@@ -223,7 +231,7 @@ const ChamaGroupsScreen = () => {
                 <View style={styles.header}>
                     <View style={styles.headerContent}>
                         <View style={styles.headerText}>
-                            <Text style={styles.headerTitle}>My Groups</Text>
+                            {/* <Text style={styles.headerTitle}>My Groups</Text> */}
                             <Text style={styles.headerSubtitle}>Manage your chama groups and track progress</Text>
                         </View>
 
@@ -231,11 +239,11 @@ const ChamaGroupsScreen = () => {
                     </View>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 8, marginBottom: 8, paddingHorizontal: 16 }}>
                         <TouchableOpacity style={styles.joinButton}
-                            onPress={() => setShowJoiningScreen(true)}
+                            onPress={() => router.push('(tabs)/groups/chamaJoining')}
                         >
                             <Text style={styles.joinButtonText}>🔍 Join Group</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.createButton}>
+                        <TouchableOpacity style={styles.createButton} onPress={() => router.push('(tabs)/groups/chamaCreation')}>
                             <Text style={styles.createButtonText}>➕ Add Group</Text>
                         </TouchableOpacity>
                     </View>

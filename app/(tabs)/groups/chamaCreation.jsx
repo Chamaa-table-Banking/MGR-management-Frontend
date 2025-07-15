@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import chamaApi from '../api/chama';
+import chamaApi from '../../api/chama';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect } from 'react';
 import {
@@ -213,19 +213,19 @@ const ChamaCreationForm = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar backgroundColor={PRIMARY_COLOR} barStyle="light-content" />
+            {/* <StatusBar backgroundColor={PRIMARY_COLOR} barStyle="light-content" /> */}
 
-            <View style={styles.header}>
+            {/* <View style={styles.header}>
                 <Text style={styles.headerTitle}>🎯 Chama Creation</Text>
                 <Text style={styles.headerSubtitle}>Create your savings group in seconds</Text>
-            </View>
+            </View> */}
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={{ flex: 1 }}
             >
                 <ScrollView
-                    style={styles.formContainer}
+                    style={[styles.formContainer, {marginTop: 20}]}
                     contentContainerStyle={styles.formContent}
                     showsVerticalScrollIndicator={false}
                 >
@@ -384,8 +384,8 @@ const styles = StyleSheet.create({
     },
     header: {
         backgroundColor: PRIMARY_COLOR,
-        paddingVertical: 20,
-        paddingHorizontal: 20,
+        // paddingVertical: 20,
+        // paddingHorizontal: 20,
         borderBottomLeftRadius: 20,
         borderBottomRightRadius: 20,
         elevation: 4,
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     headerSubtitle: {
         color: 'rgba(255, 255, 255, 0.8)',
         fontSize: 14,
-        marginTop: 5,
+        // marginTop: 5,
     },
     formContainer: {
         flex: 1,

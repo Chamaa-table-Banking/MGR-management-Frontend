@@ -17,6 +17,7 @@ import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+// import CycleCreationForm from '../cycleCreation/CycleCreationForm';
 
 const SettingsScreen = () => {
     const insets = useSafeAreaInsets();
@@ -33,6 +34,10 @@ const SettingsScreen = () => {
 
     const [incomingUser, setUser] = useState(null);
     const statusBarBgColor = darkMode ? '#121212' : '#ffffff';
+    const [showJoiningScreen, setShowJoiningScreen] = useState(false)
+
+
+
 
 
     useEffect(() => {
@@ -123,6 +128,10 @@ const SettingsScreen = () => {
         </TouchableOpacity>
     );
 
+    // if (showJoiningScreen) {
+    //     return <CycleCreationForm goBack={() => setShowJoiningScreen(false)} />;
+    // }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar style={statusBarStyle} backgroundColor={statusBarBgColor} />
@@ -180,7 +189,7 @@ const SettingsScreen = () => {
                         iconColor="#9c27b0"
                         title="Cycle Settings"
                         subtitle="Create cycle"
-                        action={() => router.push('screens/settingScreens/CycleCreationForm')} // Navigate to the cycle adding form
+                        action={() => router.push('(tabs)/settings/cycleCreation')} // Navigate to the cycle adding form
                     />
                     <SettingsItem
                         icon="cash-outline"
