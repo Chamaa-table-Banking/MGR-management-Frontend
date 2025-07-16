@@ -28,16 +28,16 @@ const GroupCyclesScreen = ({ navigation }) => {
         primaryDark: '#2E7D32',
         upcoming: {
             background: '#E3F2FD',
-            border: '#1976D2',
+            border: '#F59E0B',
             text: '#1976D2',
-            button: '#1976D2',
+            button: '#F59E0B',
             buttonText: '#fff',
-            icon: '#1976D2'
+            icon: '#F59E0B'
         },
         active: {
             background: '#E8F5E8',
-            border: '#4CAF50',
-            text: '#2E7D32',
+            border: '#EF4444',
+            text: '#EF4444',
             button: '#4CAF50',
             buttonText: '#fff',
             icon: '#4CAF50'
@@ -45,7 +45,7 @@ const GroupCyclesScreen = ({ navigation }) => {
         completed: {
             background: '#F3E5F5',
             border: '#7B1FA2',
-            text: '#4A148C',
+            text: '#EF4444',
             button: '#7B1FA2',
             buttonText: '#fff',
             icon: '#7B1FA2'
@@ -121,10 +121,10 @@ const GroupCyclesScreen = ({ navigation }) => {
     const handleJoinCycle = (cycle) => {
         const cycleStatus = getCycleStatus(cycle);
         const statusConfig = colors[cycleStatus.status];
-        
+
         Alert.alert(
             "Join Cycle",
-            `Are you sure you want to join this cycle?\n\nAmount: ${formatCurrency(cycle.amount_per_member)}\nDuration: ${calculateDuration(cycle.start_date, cycle.end_date)}`,
+            `Are you sure you want to join this cycle?\n\nAmount Per Member: ${formatCurrency(cycle.amount_per_member)}\nInterval In Days: ${cycle.interval_in_days}\nDuration: ${calculateDuration(cycle.start_date, cycle.end_date)}`,
             [
                 { text: "Cancel", style: "cancel" },
                 {
@@ -149,23 +149,23 @@ const GroupCyclesScreen = ({ navigation }) => {
         const endDate = new Date(cycle.end_date);
 
         if (now < startDate) {
-            return { 
-                status: 'upcoming', 
+            return {
+                status: 'upcoming',
                 text: 'Upcoming',
                 canJoin: true,
                 daysUntilStart: Math.ceil((startDate - now) / (1000 * 60 * 60 * 24))
             };
         } else if (now > endDate) {
-            return { 
-                status: 'completed', 
+            return {
+                status: 'completed',
                 text: 'Completed',
                 canJoin: false
             };
         } else {
-            return { 
-                status: 'active', 
+            return {
+                status: 'active',
                 text: 'Active',
-                canJoin: true
+                canJoin: false
             };
         }
     };
@@ -179,9 +179,9 @@ const GroupCyclesScreen = ({ navigation }) => {
                 <View style={styles.cardHeader}>
                     <View style={styles.cycleInfo}>
                         <Text style={styles.cycleTitle}>Cycle #{index + 1}</Text>
-                        <View style={[styles.statusBadge, { 
+                        <View style={[styles.statusBadge, {
                             backgroundColor: statusConfig.background,
-                            borderColor: statusConfig.border 
+                            borderColor: statusConfig.border
                         }]}>
                             <Text style={[styles.statusText, { color: statusConfig.text }]}>
                                 {cycleStatus.text}
@@ -207,9 +207,9 @@ const GroupCyclesScreen = ({ navigation }) => {
                     )}
                     {!cycleStatus.canJoin && (
                         <View style={[styles.disabledButton, { borderColor: statusConfig.border }]}>
-                            <Ionicons name="checkmark-circle" size={16} color={statusConfig.text} />
+                            <Ionicons name="alert-circle" size={16} color={statusConfig.text} />
                             <Text style={[styles.disabledButtonText, { color: statusConfig.text }]}>
-                                Completed
+                                Can't Join
                             </Text>
                         </View>
                     )}
@@ -273,8 +273,8 @@ const GroupCyclesScreen = ({ navigation }) => {
             <Text style={styles.emptyStateSubtitle}>
                 {error ? error : "This group doesn't have any cycles yet. Check back later or create a new cycle!"}
             </Text>
-            <TouchableOpacity 
-                style={styles.createCycleButton} 
+            <TouchableOpacity
+                style={styles.createCycleButton}
                 activeOpacity={0.8}
                 onPress={() => {
                     // Navigate to create cycle screen

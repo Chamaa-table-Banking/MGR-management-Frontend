@@ -16,6 +16,8 @@ import auth from '../../api/auth/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import ChamaJoiningScreen from './chamaJoining';
+// import { RefreshCcwDotIcon } from 'lucide-react';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const { width } = Dimensions.get('window');
@@ -152,10 +154,17 @@ const ChamaGroupsScreen = () => {
     //     router.push('ChamaJoining');
     // };
 
-    const navigateToGroup = (groupId) => () => {
+    const navigateToGroupCycles = (groupId) => {
         router.push({
             pathname: '/(tabs)/groups/[groupId]',
             params: { groupId: groupId },
+        })
+    }
+
+    const navigateToJoinedCycles = (group) => {
+        router.push({
+            pathname: '/(tabs)/groups/[groupId]/cycles',
+            params: { groupId: group.id },
         })
     }
 
@@ -202,10 +211,27 @@ const ChamaGroupsScreen = () => {
             <View style={styles.groupFooter}>
                 <Text style={styles.nextMeeting}>📅 Started: {formatDate(group.created_at)}</Text>
                 <View style={styles.growthBadge}>
-                    <TouchableOpacity onPress={navigateToGroup(group.id)}>
-                        <Text style={styles.growthText}>👀 View</Text>
+                    <TouchableOpacity onPress={() => navigateToGroupCycles(group.id)}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                            <Ionicons name="person-add-outline" size={24} style={{ marginRight: 6 }} />
+                            <Text style={styles.growthText}>Join Cycles</Text>
+                        </View>
                     </TouchableOpacity>
                 </View>
+                <View style={styles.cycleButton}>
+                    <TouchableOpacity onPress={() => navigateToJoinedCycles(group.id)}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                            <Ionicons name="eye-outline" size={24} style={{ marginRight: 6 }} />
+                            <Text style={styles.growthText}>Joined Cycles</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                {/* 
+                <TouchableOpacity onPress={() => navigateToCycles(group)}>
+                    <Ionicons name="eye-outline" size={24} style={{ marginRight: 6 }} />
+                    <Text style={styles.growthText}>
+                        See Joined Cycles</Text>
+                </TouchableOpacity> */}
             </View>
         </View>
     );
@@ -625,6 +651,14 @@ const styles = StyleSheet.create({
     nextMeeting: {
         fontSize: 14,
         color: '#6B7280',
+    },
+    cycleButton: {
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        backgroundColor: '#fef3c7', // Amber-100
+        borderRadius: 20,
+        // marginTop: 10,
+        alignSelf: 'flex-start',
     },
     growthBadge: {
         backgroundColor: '#DCFCE7',
