@@ -45,6 +45,16 @@ class ChamaApi {
     async joinChama(data: { chamaa_id: string, user_id: string }) {
         try {
             const response = await instance.post(`${url}/join`, data);
+            console.log(response.data)
+            return response.data.data;
+        } catch (error) {
+            console.error('Error:', error);
+            throw error;
+        }
+    }
+    async getChamaById(id: string) {
+        try {
+            const response = await instance.get(`${url}/getbyid/${id}`);
             return response.data.data;
         } catch (error) {
             console.error('Error:', error);

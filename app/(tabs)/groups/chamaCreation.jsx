@@ -17,6 +17,7 @@ import {
     FlatList,
     Image,
     Dimensions,
+    Alert,
 } from 'react-native';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -106,7 +107,13 @@ const ChamaCreationForm = () => {
             );
 
             if (response?.error) {
-                console.error('Chama creation failed:', response.error);
+                // console.error('Chama creation failed:', response.error);
+                Alert.alert("Error", "Failed to create chama. Please try again.");
+                return;
+            }
+            const joinResponse = await chamaApi.joinChama({ chamaa_id: response.data.id, user_id: userId });
+            if (joinResponse.message === "Error joining chama") {
+                Alert.alert("Error", "Failed to join chama. Please try again.");
                 return;
             }
 
@@ -225,7 +232,7 @@ const ChamaCreationForm = () => {
                 style={{ flex: 1 }}
             >
                 <ScrollView
-                    style={[styles.formContainer, {marginTop: 20}]}
+                    style={[styles.formContainer, { marginTop: 20 }]}
                     contentContainerStyle={styles.formContent}
                     showsVerticalScrollIndicator={false}
                 >

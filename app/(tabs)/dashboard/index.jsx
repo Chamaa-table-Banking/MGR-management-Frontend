@@ -18,27 +18,28 @@ import { useRouter } from 'expo-router';
 const { width } = Dimensions.get('window');
 
 export default function Home() {
-    const insets = useSafeAreaInsets();
-    const [activeTab, setActiveTab] = useState('dashboard');
+    // const insets = useSafeAreaInsets();
+    // const [activeTab, setActiveTab] = useState('dashboard');
 
-    const router = useRouter();
+    // const router = useRouter();
 
-    const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        const loadUserData = async () => {
-            try {
-                const userData = await AsyncStorage.getItem('user');
-                if (userData) {
-                    setUser(JSON.parse(userData));
-                }
-            } catch (error) {
-                console.log('Error loading user data:', error);
-            }
-        };
+    // const [user, setUser] = useState(null);
 
-        loadUserData();
-    }, []);
+    // useEffect(() => {
+    //     const loadUserData = async () => {
+    //         try {
+    //             const userData = await AsyncStorage.getItem('user');
+    //             if (userData) {
+    //                 setUser(JSON.parse(userData));
+    //             }
+    //         } catch (error) {
+    //             console.log('Error loading user data:', error);
+    //         }
+    //     };
+
+    //     loadUserData();
+    // }, []);
 
 
     // console.log("User data:", user.user.username);
@@ -61,7 +62,7 @@ export default function Home() {
         { id: '3', name: 'Anna Lee', type: 'Contribution', amount: '+Ksh 175' },
     ];
 
-    console.log("User data:", user);
+    // console.log("User data:", user);
 
     return (
         <SafeAreaView style={styles.container}>

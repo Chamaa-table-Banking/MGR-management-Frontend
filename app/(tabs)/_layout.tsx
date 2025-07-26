@@ -38,15 +38,15 @@ export default function Layout() {
       })}
     >
       <Tabs.Screen name="dashboard" />
-      <Tabs.Screen name="transactions" />
+      {/* <Tabs.Screen name="transactions" /> */}
       <Tabs.Screen name="groups" />
-      <Tabs.Screen name="reports" />
+      {/* <Tabs.Screen name="reports" /> */}
       <Tabs.Screen name="settings" />
       {/* Hide the child route from tabs */}
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="settings/cycleCreation"
         options={{ href: null }}
-      />
+      /> */}
     </Tabs>
   );
 }

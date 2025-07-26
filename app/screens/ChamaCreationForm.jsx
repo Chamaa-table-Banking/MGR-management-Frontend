@@ -17,6 +17,8 @@ import {
     FlatList,
     Image,
     Dimensions,
+    Alert,
+    ActivityIndicator,
 } from 'react-native';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -29,6 +31,7 @@ const ChamaCreationForm = () => {
     const router = useRouter();
 
     const [userId, setUserId] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     // get user id from local storage
     const [formData, setFormData] = useState({
@@ -47,16 +50,26 @@ const ChamaCreationForm = () => {
             try {
                 const userData = await AsyncStorage.getItem('user');
                 if (userData) {
-                    const id = JSON.parse(userData).user.id;
-                    setUserId(id);
+                    setUser(JSON.parse(userData));
                 }
             } catch (error) {
-                console.log('Error loading user data:', error);
+                console.error('Error loading user data:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
         loadUserData();
     }, []);
+
+    if (loading) {
+        return (
+            <SafeAreaView style={styles.container}>
+                <ActivityIndicator size="large" color="#00803e" />
+            </SafeAreaView>
+        );
+    }
+
 
     useEffect(() => {
         if (userId) {
@@ -106,13 +119,19 @@ const ChamaCreationForm = () => {
             );
 
             if (response?.error) {
-                console.error('Chama creation failed:', response.error);
+                // console.error('Chama creation failed:', response.error);
+                Alert.alert("Error", "Failed to create chama. Please try again.");
                 return;
             }
-
+            const joinResponse = await chamaApi.joinChama({ chamaa_id: response.data.id, user_id: userId });
+            if (joinResponse.message === "Error joining chama") {
+                Alert.alert("Error", "Failed to join chama. Please try again.");
+                return;
+            }
             setShowSuccess(true);
             setTimeout(() => {
                 setShowSuccess(false);
+                // after creating chama join it 
                 router.push('/dashboard');
             }, 2000);
 

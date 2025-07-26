@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ImageBackground, Alert, useColorScheme } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ImageBackground, Alert, useColorScheme, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,11 +12,14 @@ export default function LoginScreen() {
     const [password, setPassword] = useState('');
     const router = useRouter();
     const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const colorScheme = useColorScheme();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+        setError('');
 
         try {
             const response = await auth.login(username, password);
@@ -24,20 +27,26 @@ export default function LoginScreen() {
 
             if (!userData?.error) {
                 await AsyncStorage.setItem("user", JSON.stringify(userData));
-                if (userData.user?.chamaa.message === "No chamaa found for this user") {
-                    router.replace("/groupSelection"); // ✅ TS now knows this is valid
-                } else {
-                    router.replace("/dashboard") // ✅ Valid too
-                }
 
+                // Ensure navigation happens in the next tick
+                setTimeout(() => {
+                    if (userData.user?.chamaa?.message === "No chamaa found for this user") {
+                        router.push("/groupSelection");
+                    } else {
+                        router.push("/(tabs)/dashboard");
+                    }
+                }, 100);
             } else {
-                setError(userData.error);
+                setError(userData.error || "Login failed");
             }
         } catch (error) {
             console.error("Login failed:", error);
-            setError("Login failed. Please try again.");
+            setError(error.message || "Login failed. Please try again.");
+        } finally {
+            setIsLoading(false);
         }
     };
+
 
 
     // const color = colorScheme === 'dark' ? '#fff' : '#000';
@@ -76,7 +85,11 @@ export default function LoginScreen() {
                     style={{ width: '80%', padding: 15, backgroundColor: '#28a745', borderRadius: 25, alignItems: 'center', marginVertical: 10 }}
                     onPress={handleLogin}
                 >
-                    <Text style={{ color: 'white', fontWeight: 'bold' }}>Sign In</Text>
+                    {isLoading ? (
+                        <ActivityIndicator color="white" />
+                    ) : (
+                        <Text style={{ color: 'white', fontWeight: 'bold' }}>Sign In</Text>
+                    )}
                 </TouchableOpacity>
                 <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', width: '80%' }}>
                     <Text style={{ color: 'blue', textDecorationLine: 'underline', marginVertical: 10 }}>Forgot password?</Text>

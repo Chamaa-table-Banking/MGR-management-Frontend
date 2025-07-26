@@ -12,7 +12,9 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
-import cycleApi from '../../api/cycles';
+import cycleApi from '../../../api/cycles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import chamaApi from '../../../api/chama';
 
 const GroupCyclesScreen = ({ navigation }) => {
     const { groupId } = useLocalSearchParams();
@@ -20,6 +22,11 @@ const GroupCyclesScreen = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState(null);
+    const [userId, setUserId] = useState(null);
+    const [userCycles, setUserCycles] = useState([]);
+    const [group, setGroup] = useState({});
+    const [isChairman, setIsChairman] = useState(false);
+
 
     // Enhanced color palette
     const colors = {
@@ -59,6 +66,17 @@ const GroupCyclesScreen = ({ navigation }) => {
         border: '#E0E0E0'
     };
 
+    const loadedUser = async () => {
+        const userData = await AsyncStorage.getItem('user')
+        if (userData) {
+            const id = JSON.parse(userData).user?.id;
+            setUserId(id);
+        }
+    }
+    useEffect(() => {
+        loadedUser();
+    }, [])
+
     const fetchCycles = async () => {
         try {
             setError(null);
@@ -78,6 +96,7 @@ const GroupCyclesScreen = ({ navigation }) => {
     useEffect(() => {
         if (groupId) {
             fetchCycles();
+            getChamaGroupById(groupId);
         }
     }, [groupId]);
 
@@ -132,10 +151,21 @@ const GroupCyclesScreen = ({ navigation }) => {
                     onPress: async () => {
                         try {
                             // Add your join cycle API call here
-                            // await cycleApi.joinCycle(cycle.id);
-                            Alert.alert("Success", "You have successfully joined the cycle!");
+                            const data = {
+                                cycle_id: cycle.id,
+                                chamaa_id: cycle.chamaa_id,
+                                user_id: userId
+                            }
+                            const response = await cycleApi.joinCycle(data);
+                            if (response.data === "Error joining cycle") {
+                                Alert.alert("Error", "Failed to join cycle. Please try again.");
+                            } else {
+                                Alert.alert("Success", "You have successfully joined the cycle!");
+                                fetchCycles();
+                            }
                         } catch (error) {
                             Alert.alert("Error", "Failed to join cycle. Please try again.");
+                            // console.error("Error joining cycle:", error);
                         }
                     }
                 }
@@ -143,12 +173,60 @@ const GroupCyclesScreen = ({ navigation }) => {
         );
     };
 
+    // get chama by id 
+    const getChamaGroupById = async (id) => {
+        console.log("the passed id is ", id)
+        try {
+            const response = await chamaApi.getChamaById(id);
+            setGroup(response);
+        } catch (error) {
+            console.error('Error fetching chama:', error.message);
+            throw error;
+        }
+    };
+
+    useEffect(() => {
+        // if (groupId) {
+        const data = {
+            chamaa_id: groupId,
+            user_id: userId
+        }
+        const userCyles = async (data) => {
+            try {
+                const response = await cycleApi.getUserCyclesInChama(data);
+                setUserCycles(response.data.data);
+            } catch (error) {
+                console.error('Error fetching user cycles:', error);
+            }
+        }
+        if (userId) {
+            userCyles(data);
+            // getChamaById(groupId);
+        }
+        if (userCycles.length > 0) {
+            console.log("the user cyles are ", userCycles)
+            if (userId === group.chairperson) {
+                setIsChairman(true);
+            }
+        }
+
+    }, [groupId, userId]);
+
+    console.log(groupId)
     const getCycleStatus = (cycle) => {
         const now = new Date();
         const startDate = new Date(cycle.start_date);
         const endDate = new Date(cycle.end_date);
 
-        if (now < startDate) {
+        const isUserInCycle = userCycles.find(userCycle => userCycle.cycle_id === cycle.id);
+
+        if (isUserInCycle) {
+            return {
+                status: 'active',
+                text: 'Already In cycle',
+                canJoin: false
+            };
+        } else if (now < startDate) {
             return {
                 status: 'upcoming',
                 text: 'Upcoming',
@@ -165,10 +243,11 @@ const GroupCyclesScreen = ({ navigation }) => {
             return {
                 status: 'active',
                 text: 'Active',
-                canJoin: false
+                canJoin: true
             };
         }
     };
+
 
     const renderCycleCard = ({ item, index }) => {
         const cycleStatus = getCycleStatus(item);
@@ -273,17 +352,19 @@ const GroupCyclesScreen = ({ navigation }) => {
             <Text style={styles.emptyStateSubtitle}>
                 {error ? error : "This group doesn't have any cycles yet. Check back later or create a new cycle!"}
             </Text>
-            <TouchableOpacity
-                style={styles.createCycleButton}
-                activeOpacity={0.8}
-                onPress={() => {
-                    // Navigate to create cycle screen
-                    // navigation.navigate('CreateCycle', { groupId });
-                }}
-            >
-                <Ionicons name="add-circle-outline" size={20} color={colors.primary} />
-                <Text style={styles.createCycleText}>Create New Cycle</Text>
-            </TouchableOpacity>
+            {isChairman && (
+                <TouchableOpacity
+                    style={styles.createCycleButton}
+                    activeOpacity={0.8}
+                    onPress={() => {
+                        // Navigate to create cycle screen
+                        // navigation.navigate('CreateCycle', { groupId });
+                    }}
+                >
+                    <Ionicons name="add-circle-outline" size={20} color={colors.primary} />
+                    <Text style={styles.createCycleText}>Create New Cycle</Text>
+                </TouchableOpacity>
+            )}
         </View>
     );
 

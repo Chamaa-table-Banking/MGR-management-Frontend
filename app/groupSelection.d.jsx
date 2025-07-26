@@ -18,7 +18,7 @@ const GroupSelectionScreen = ({ navigation }) => {
   const handleBrowseGroups = () => {
     // Navigate to browse groups screen
     // navigation.navigate('BrowseGroups');
-    console.log('Navigate to browse groups');
+    router.push("./screens/AvailableGroups")
   };
 
   const handleCreateGroup = () => {

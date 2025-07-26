@@ -161,9 +161,11 @@ const ChamaGroupsScreen = () => {
         })
     }
 
+    console.log(chamaGroups)
+
     const navigateToJoinedCycles = (group) => {
         router.push({
-            pathname: '/(tabs)/groups/[groupId]/cycles',
+            pathname: `/(tabs)/groups/${group.id}/cycles`,
             params: { groupId: group.id },
         })
     }
@@ -219,7 +221,7 @@ const ChamaGroupsScreen = () => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.cycleButton}>
-                    <TouchableOpacity onPress={() => navigateToJoinedCycles(group.id)}>
+                    <TouchableOpacity onPress={() => navigateToJoinedCycles(group)}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
                             <Ionicons name="eye-outline" size={24} style={{ marginRight: 6 }} />
                             <Text style={styles.growthText}>Joined Cycles</Text>
