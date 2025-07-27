@@ -70,7 +70,7 @@ export default function Register() {
 
             if (res.data.id) {
                 const response = await auth.createRole(email, memberRole, fullName, res.data.id);
-                console.log(response);
+                // console.log(response);
                 router.push('/login');
             }
         } catch (error) {

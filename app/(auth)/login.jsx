@@ -19,9 +19,11 @@ export default function LoginScreen() {
     // Ensure navigation is safe to use
     useFocusEffect(
         useCallback(() => {
-            setIsNavigationReady(true);
+            isMounted.current = true;               // ✅ Mark as mounted
+            setIsNavigationReady(true);             // ✅ Mark navigation ready
+
             return () => {
-                isMounted.current = false;
+                isMounted.current = false;            // ✅ Cleanup on unfocus/unmount
                 setIsNavigationReady(false);
             };
         }, [])
@@ -40,29 +42,21 @@ export default function LoginScreen() {
 
             if (!userData?.error) {
                 await AsyncStorage.setItem("user", JSON.stringify(userData));
-                isMounted.current = true;
-                // Wait for next tick and verify component is mounted
-                setTimeout(() => {
 
-                    // if (!isMounted.current) {
-                    //     setIsLoading(false);
-                    //     setError("Mounting page failed");
-                    //     // return;
-                    // }
+                // ✅ Only navigate if component is still mounted and navigation is ready
+                if (!isMounted.current || !isNavigationReady) return;
 
-                    if (isNavigationReady) {
-                        if (userData.user?.chamaa?.message === "No chamaa found for this user") {
-                            router.push("/groupSelection");
-                        } else {
-                            router.push({
-                                pathname: "/(tabs)/dashboard",
-                                params: { refresh: Date.now() } // Force refresh
-                            });
-                        }
-                    }
-                }, 3000);
+                if (userData.user?.chamaa?.message === "No chamaa found for this user") {
+                    router.push("/groupSelection");
+                } else {
+                    router.push({
+                        pathname: "/(tabs)/dashboard",
+                        params: { refresh: Date.now() }
+                    });
+                }
+
             } else {
-                setError(userData.error || "Login failed");
+                setError("Login failed");
             }
         } catch (error) {
             console.error("Login failed:", error);
@@ -73,6 +67,7 @@ export default function LoginScreen() {
             }
         }
     };
+
 
 
 
