@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ImageBackground, Alert, useColorScheme, ActivityIndicator } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import { useRouter } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import auth from '../api/auth/auth';
@@ -13,6 +13,19 @@ export default function LoginScreen() {
     const router = useRouter();
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const isMounted = useRef(true);
+    const [isNavigationReady, setIsNavigationReady] = useState(false);
+
+    // Ensure navigation is safe to use
+    useFocusEffect(
+        useCallback(() => {
+            setIsNavigationReady(true);
+            return () => {
+                isMounted.current = false;
+                setIsNavigationReady(false);
+            };
+        }, [])
+    );
 
     const colorScheme = useColorScheme();
 
@@ -27,15 +40,27 @@ export default function LoginScreen() {
 
             if (!userData?.error) {
                 await AsyncStorage.setItem("user", JSON.stringify(userData));
-
-                // Ensure navigation happens in the next tick
+                isMounted.current = true;
+                // Wait for next tick and verify component is mounted
                 setTimeout(() => {
-                    if (userData.user?.chamaa?.message === "No chamaa found for this user") {
-                        router.push("/groupSelection");
-                    } else {
-                        router.push("/(tabs)/dashboard");
+
+                    // if (!isMounted.current) {
+                    //     setIsLoading(false);
+                    //     setError("Mounting page failed");
+                    //     // return;
+                    // }
+
+                    if (isNavigationReady) {
+                        if (userData.user?.chamaa?.message === "No chamaa found for this user") {
+                            router.push("/groupSelection");
+                        } else {
+                            router.push({
+                                pathname: "/(tabs)/dashboard",
+                                params: { refresh: Date.now() } // Force refresh
+                            });
+                        }
                     }
-                }, 100);
+                }, 3000);
             } else {
                 setError(userData.error || "Login failed");
             }
@@ -43,7 +68,9 @@ export default function LoginScreen() {
             console.error("Login failed:", error);
             setError(error.message || "Login failed. Please try again.");
         } finally {
-            setIsLoading(false);
+            if (isMounted.current) {
+                setIsLoading(false);
+            }
         }
     };
 

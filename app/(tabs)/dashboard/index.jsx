@@ -51,15 +51,15 @@ export default function Home() {
                 data: [10000, 10500, 11200, 11800, 12450],
                 color: (opacity = 1) => `rgba(0, 128, 62, ${opacity})`,
                 strokeWidth: 2,
-            },
-        ],
+            }
+        ]
     };
 
     // Recent activity dummy data
     const recentActivity = [
         { id: '1', name: 'Sarah Johnson', type: 'Contribution', amount: '+Ksh 200' },
         { id: '2', name: 'Michael Smith', type: 'Contribution', amount: '+Ksh 150' },
-        { id: '3', name: 'Anna Lee', type: 'Contribution', amount: '+Ksh 175' },
+        { id: '3', name: 'Anna Lee', type: 'Contribution', amount: '+Ksh 175' }
     ];
 
     // console.log("User data:", user);
@@ -167,11 +167,11 @@ export default function Home() {
                 <View style={[styles.section, { marginBottom: 90 }]}>
                     <Text style={styles.sectionTitle}>Recent Activity</Text>
 
-                    {recentActivity.map((activity) => (
+                    {recentActivity?.map((activity) => (
                         <View key={activity.id} style={styles.activityItem}>
                             <View style={styles.activityInitials}>
                                 <Text style={styles.initialsText}>
-                                    {activity.name.split(' ').map(name => name[0]).join('')}
+                                    {activity.name.split(' ')?.map(name => name[0]).join('')}
                                 </Text>
                             </View>
                             <View style={styles.activityDetails}>

@@ -12,7 +12,7 @@ import {
 import { useRouter } from 'expo-router';
 import Svg, { Circle, Path, Line } from 'react-native-svg';
 
-const GroupSelectionScreen = ({ navigation }) => {
+const GroupSelectionScreen = () => {
     const router = useRouter();
 
     const handleBrowseGroups = () => {
